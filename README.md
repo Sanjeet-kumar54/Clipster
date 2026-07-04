@@ -1,11 +1,11 @@
-# ClipSkari
+# Clipster
 
 > Convert long videos (podcasts, interviews, lectures) into vertical short clips for Reels, Shorts & TikTok — fully automated, GPU-powered, production-ready.
 
 [![Architecture](https://img.shields.io/badge/architecture-polyglot-blue)](docs/ARCHITECTURE.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-ClipSkari is a full-stack college project that takes a YouTube URL and produces 5–10 ready-to-post vertical clips with AI-selected moments, smart reframing, captions, themes, and 13 visual effects.
+Clipster is a full-stack college project that takes a YouTube URL and produces 5–10 ready-to-post vertical clips with AI-selected moments, smart reframing, captions, themes, and 13 visual effects.
 
 ## What it does
 
@@ -40,7 +40,7 @@ ClipSkari is a full-stack college project that takes a YouTube URL and produces 
 ## Project structure
 
 ```
-clipskari/
+Clipster/
 ├── README.md                ← you are here
 ├── docker-compose.yml       ← one-command local dev stack
 ├── .env.example             ← all env vars documented
@@ -76,8 +76,8 @@ clipskari/
 
 ### 1. Clone & configure
 ```bash
-git clone <your-repo-url> clipskari
-cd clipskari
+git clone https://github.com/Sanjeet-kumar54/Clipster.git Clipster
+cd Clipster
 cp .env.example .env        # fill in real values
 ```
 
@@ -126,7 +126,6 @@ See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for the full guide:
 - **One-click clip download** — fresh signed URLs, 7-day expiry
 - **QC contact sheet** — 3×3 thumbnail grid for visual review
 - **RLS-enforced** — users can only see their own jobs & clips
-- **Cost-controlled** — Modal scales to zero when idle, no idle charges
 
 ## Tech notes
 
@@ -152,7 +151,3 @@ See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for the full guide:
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-## Credits
-
-The v8 reframer was originally developed for Kaggle GPUs and is preserved here. The full-stack wrapper around it (FastAPI + Modal + Supabase + React) was built as a college project submission.
