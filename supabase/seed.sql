@@ -1,0 +1,33 @@
+-- ============================================================
+-- ClipSkari — Demo Seed Data
+-- ============================================================
+-- Run AFTER 001_init.sql. Creates a demo user (use Supabase Auth
+-- to sign up first, then grab the user ID from auth.users) and
+-- sample jobs for the dashboard.
+--
+-- Usage:
+--   1. Sign up a user via the frontend (Magic Link email)
+--   2. Note the user's UUID from `select id, email from auth.users;`
+--   3. Replace DEMO_USER_ID below with that UUID
+--   4. Run this file
+-- ============================================================
+
+-- Replace with your real user ID after signup
+-- set DEMO_USER_ID to your auth.users.id
+
+-- Example: insert demo jobs
+-- insert into public.jobs (user_id, status, mode, source_url, title, batch_config, created_at, completed_at, elapsed_sec, clips_count)
+-- values (
+--     'DEMO_USER_ID'::uuid,
+--     'completed',
+--     'automation',
+--     'https://www.youtube.com/watch?v=demo',
+--     'Demo Podcast Episode',
+--     '{"card_theme": "neon_void", "caption_language": "hinglish"}'::jsonb,
+--     now() - interval '2 days',
+--     now() - interval '2 days' + interval '12 minutes',
+--     720,
+--     5
+-- );
+
+-- This file is intentionally a template — uncomment & customize after signup.

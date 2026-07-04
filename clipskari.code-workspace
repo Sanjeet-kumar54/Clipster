@@ -1,0 +1,40 @@
+{
+	"folders": [
+		{
+			"name": "1. Project Root",
+			"path": "."
+		},
+		{
+			"name": "2. Frontend (React/Vite)",
+			"path": "frontend"
+		},
+		{
+			"name": "3. Backend (FastAPI)",
+			"path": "backend"
+		},
+		{
+			"name": "4. GPU Serverless (Modal)",
+			"path": "modal_gpu"
+		},
+		{
+			"name": "5. Database & Migrations",
+			"path": "supabase"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.DS_Store": true,
+			"**/node_modules": true,
+			"**/__pycache__": true,
+			"**/*.pyc": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/dist": true,
+			"**/build": true,
+			"**/.svelte-kit": true,
+			"**/.next": true
+		}
+	}
+}

@@ -1,0 +1,53 @@
+# Docker Compose for local ClipSkari development
+# Brings up FastAPI backend + Supabase local (optional) + Frontend dev server
+#
+# Usage:
+#   docker-compose up                # backend on :8000, frontend on :5173
+#   docker-compose up backend        # backend only
+#   docker-compose down              # stop everything
+#
+# Note: Modal GPU functions are NOT included here — they run in Modal's cloud.
+# Set MODAL_TOKEN_ID and MODAL_TOKEN_SECRET in .env to enable real GPU calls.
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+    volumes:
+      # Hot reload in dev
+      - ./backend:/app
+      # Don't override container's installed packages
+      - /app/__pycache__
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/v1/health').raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    environment:
+      - VITE_API_BASE_URL=  # empty = use Vite proxy
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      - backend
+    restart: unless-stopped

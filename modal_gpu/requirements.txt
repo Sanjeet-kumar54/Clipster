@@ -1,0 +1,34 @@
+# Modal GPU Image — Dependencies
+# These are installed via pip in modal_app.py's image definition.
+# This file is for local reference / Docker parity only.
+
+# Core ML
+torch==2.3.1
+torchvision==0.18.1
+torchaudio==2.3.1
+ultralytics==8.2.78
+filterpy==1.4.5
+
+# Computer Vision
+opencv-python-headless==4.10.0.84
+Pillow==10.4.0
+numpy==1.26.4
+scipy==1.13.1
+
+# Audio / ASR
+python_speech_features==0.6
+faster-whisper==1.0.3
+ctranslate2==4.3.1
+
+# YouTube download
+yt-dlp==2024.8.6
+
+# HTTP / LLM
+requests==2.32.3
+
+# Supabase client
+supabase==2.7.4
+
+# Utils
+tqdm==4.66.5
+gdown==6.0.0
