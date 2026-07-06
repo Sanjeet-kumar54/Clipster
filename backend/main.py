@@ -103,6 +103,13 @@ async def root():
     }
 
 
+@app.get("/api/v1/debug-cors")
+async def debug_cors():
+    return {
+        "cors_origins": settings.cors_origins,
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
 
