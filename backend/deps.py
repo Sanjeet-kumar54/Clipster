@@ -54,20 +54,27 @@ def get_current_user_id(
     # If we have a JWT secret, verify the signature locally (fast path)
     if settings.supabase_jwt_secret:
         try:
+            # Get the algorithm from the header to print/debug if it fails
+            try:
+                unverified_header = jwt.get_unverified_header(token)
+                token_alg = unverified_header.get("alg", "unknown")
+            except Exception:
+                token_alg = "unparseable"
+
             payload = jwt.decode(
                 token,
                 settings.supabase_jwt_secret,
-                algorithms=["HS256"],
+                algorithms=["HS256", "RS256", "ES256"],
                 audience="authenticated",
             )
             user_id = payload.get("sub")
             if not user_id:
-                raise HTTPException(status_code=401, detail="Invalid token: no sub claim")
+                raise HTTPException(status_code=401, detail=f"Invalid token: no sub claim (token alg: {token_alg})")
             return user_id
         except jwt.ExpiredSignatureError:
             raise HTTPException(status_code=401, detail="Token expired")
         except jwt.PyJWTError as e:
-            raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
+            raise HTTPException(status_code=401, detail=f"Invalid token: {e} (token alg: {token_alg})")
 
     # Fallback: verify against Supabase auth.getUser (network round-trip)
     try:
