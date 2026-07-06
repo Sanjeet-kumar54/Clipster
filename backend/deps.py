@@ -51,32 +51,22 @@ def get_current_user_id(
 
     token = authorization.split(" ", 1)[1]
 
-    # If we have a JWT secret, verify the signature locally (fast path)
+    # 1. Try local verification (Fast Path)
     if settings.supabase_jwt_secret:
         try:
-            # Get the algorithm from the header to print/debug if it fails
-            try:
-                unverified_header = jwt.get_unverified_header(token)
-                token_alg = unverified_header.get("alg", "unknown")
-            except Exception:
-                token_alg = "unparseable"
-
             payload = jwt.decode(
                 token,
                 settings.supabase_jwt_secret,
-                algorithms=["HS256", "RS256", "ES256"],
+                algorithms=["HS256"],
                 audience="authenticated",
             )
             user_id = payload.get("sub")
-            if not user_id:
-                raise HTTPException(status_code=401, detail=f"Invalid token: no sub claim (token alg: {token_alg})")
-            return user_id
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(status_code=401, detail="Token expired")
-        except jwt.PyJWTError as e:
-            raise HTTPException(status_code=401, detail=f"Invalid token: {e} (token alg: {token_alg})")
+            if user_id:
+                return user_id
+        except Exception as e:
+            logger.info("Local JWT verification failed (falling back to network check): %s", e)
 
-    # Fallback: verify against Supabase auth.getUser (network round-trip)
+    # 2. Fallback: verify against Supabase auth.getUser (Network Round-Trip)
     try:
         anon = get_supabase_anon(settings)
         anon.auth.set_session(token, "")  # Set session for this call
