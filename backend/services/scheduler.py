@@ -66,11 +66,24 @@ class JobScheduler:
         logger.info("JobScheduler stopped")
 
     async def _run_loop(self):
+        consecutive_failures = 0
         while not self._stop.is_set():
             try:
                 await self._poll_once()
+                consecutive_failures = 0  # reset on success
             except Exception as e:
-                logger.exception("JobScheduler poll failed: %s", e)
+                consecutive_failures += 1
+                # Exponential backoff: 5s, 10s, 20s, 40s, capped at 60s
+                backoff = min(self.settings.job_poll_interval_sec * (2 ** (consecutive_failures - 1)), 60)
+                logger.exception(
+                    "JobScheduler poll failed (attempt %d, next retry in %ds): %s",
+                    consecutive_failures, backoff, e,
+                )
+                try:
+                    await asyncio.wait_for(self._stop.wait(), timeout=backoff)
+                except TimeoutError:
+                    pass
+                continue
             try:
                 await asyncio.wait_for(
                     self._stop.wait(),
