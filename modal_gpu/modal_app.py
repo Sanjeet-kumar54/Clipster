@@ -72,15 +72,13 @@ image = (
     # ── Download TalkNet pretrained weights ──
     .run_commands(
         'pip install --quiet gdown==6.0.0',
-        'gdown --id 1AbN9fCf9IexMxEKXLQY2KYBlb-IhSEea -O /opt/talknet/pretrain_TalkSet.model || echo "TalkNet weights download failed"',
+        'gdown 1AbN9fCf9IexMxEKXLQY2KYBlb-IhSEea -O /opt/talknet/pretrain_TalkSet.model || echo "TalkNet weights download failed"',
     )
     # ── Download YOLO face models ──
     .run_commands(
         'wget -q -O /opt/yolov8n-face.pt "https://github.com/akanametov/yolo-face/releases/download/1.0.0/yolov8n-face.pt" || true',
         'wget -q -O /opt/yolov11n-face.pt "https://github.com/akanametov/yolo-face/releases/download/1.0.0/yolov11n-face.pt" || true',
     )
-    # ── Copy the reframer script into the image ──
-    .add_local_file("reframer.py", "/root/reframer.py")
     .run_commands("mkdir -p /opt/models /tmp/working")
     .env({
         "TALKNET_REPO": "/opt/talknet",
@@ -88,6 +86,8 @@ image = (
         "HF_HOME": "/opt/hf_cache",
         "XDG_CACHE_HOME": "/opt/cache",
     })
+    # ── Copy the reframer script into the image ──
+    .add_local_file("reframer.py", "/root/reframer.py", copy=True)
 )
 
 # ── Modal volume for model caching across cold starts ──────────────────
@@ -118,8 +118,8 @@ def _bootstrap_env():
     },
     secrets=[
         modal.Secret.from_name("groq-api-key"),
-        modal.Secret.from_name("pexels-api-key", required=False),
-        modal.Secret.from_name("supabase-credentials", required=False),
+        modal.Secret.from_name("pexels-api-key"),
+        modal.Secret.from_name("supabase-credentials"),
     ],
 )
 def run_automation(
@@ -207,7 +207,7 @@ def run_automation(
     },
     secrets=[
         modal.Secret.from_name("groq-api-key"),
-        modal.Secret.from_name("pexels-api-key", required=False),
+        modal.Secret.from_name("pexels-api-key"),
     ],
 )
 def run_manifest(manifest: dict) -> dict:
